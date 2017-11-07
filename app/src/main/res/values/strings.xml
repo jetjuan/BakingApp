@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Baking App</string>
     <string name="title_recipe_detail">Recipe Detail</string>
+    
+    //Constants
+    <string name="recipe_endpoint" translatable="false">topher/2017/May/59121517_baking/baking.json</string>
+    <string name="recipe_api_domain" translatable="false">"https://d17h27t6h515a5.cloudfront.net"</string>
 </resources>

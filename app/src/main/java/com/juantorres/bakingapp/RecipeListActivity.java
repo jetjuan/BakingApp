@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,16 @@ import android.widget.TextView;
 
 
 import com.juantorres.bakingapp.dummy.DummyContent;
+import com.juantorres.bakingapp.data.Recipe;
+import com.juantorres.bakingapp.data.json.RequestInterface;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * An activity representing a list of Recipes. This activity
@@ -64,7 +73,36 @@ public class RecipeListActivity extends AppCompatActivity {
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
+
+
     }
+
+    private void loadJSON(){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://d17h27t6h515a5.cloudfront.net")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        final RequestInterface request = retrofit.create(RequestInterface.class);
+        Call<List<Recipe>> call = request.getJSON();
+        call.enqueue(new Callback<List<Recipe>>() {
+            @Override
+            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+                List<Recipe> responses=  response.body();
+                Log.d("lol", response.body().get(0).getIngredients().get(0).getName() + "");
+//                JSONResponse jsonResponse = response.body();
+//                data = new ArrayList<>(Arrays.asList(jsonResponse.getRecipes()));
+//                adapter = new DataAdapter(data);
+//                recyclerView.setAdapter(adapter);
+                Log.d("Info", "Recipes downloaded successfully.");
+            }
+
+            @Override
+            public void onFailure(Call<List<Recipe>> call, Throwable t) {
+                Log.d("Error",t.getMessage());
+            }
+        });
+    }
+
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
