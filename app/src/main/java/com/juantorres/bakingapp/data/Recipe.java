@@ -62,4 +62,8 @@ public class Recipe {
     public void setSteps(List<Step> steps) {
         this.steps = steps;
     }
+
+    public String getIdAsString(){
+        return String.valueOf(this.id);
+    }
 }
