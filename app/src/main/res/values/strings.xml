@@ -5,4 +5,12 @@
     //Constants
     <string name="recipe_endpoint" translatable="false">topher/2017/May/59121517_baking/baking.json</string>
     <string name="recipe_api_domain" translatable="false">"https://d17h27t6h515a5.cloudfront.net"</string>
+
+
+    //Labels
+    <string name="label_servings">Servings: </string>
+
+    //Tools
+    <string name="tool_recipe_name">Android Pie</string>
+    <string name="tool_reipe_servings">8</string>
 </resources>

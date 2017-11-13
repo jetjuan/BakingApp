@@ -13,9 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.bumptech.glide.Glide;
 import com.juantorres.bakingapp.dummy.DummyContent;
 import com.juantorres.bakingapp.data.Recipe;
 import com.juantorres.bakingapp.data.json.RequestInterface;
@@ -128,8 +130,17 @@ public class RecipeListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final RecipeViewHolder holder, int position) {
             holder.mItem = mRecipes.get(position);
-            holder.mIdView.setText(mRecipes.get(position).getName());
-            holder.mContentView.setText(mRecipes.get(position).getName());
+            holder.mTvRecipeName.setText(mRecipes.get(position).getName());
+            holder.mTvServingsCount.setText( String.valueOf(holder.mItem.getServings()));
+            String picUrl = holder.mItem.getImage();
+            if(!picUrl.equals("") && picUrl !=null){
+                Glide
+                        .with(getApplicationContext())
+                        .load(picUrl)
+                        //.centerCrop() TODO find out why this doesn't work
+//                        .placeholder()TODO add a spinner as a placeholder
+                        .into(holder.mIvRecipeImage);
+            }
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -160,20 +171,22 @@ public class RecipeListActivity extends AppCompatActivity {
 
         public class RecipeViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
-            public final TextView mIdView;
-            public final TextView mContentView;
+            public final TextView mTvRecipeName;
+            public final TextView mTvServingsCount;
+            public final ImageView mIvRecipeImage;
             public Recipe mItem;
 
             public RecipeViewHolder(View view) {
                 super(view);
                 mView = view;
-                mIdView = (TextView) view.findViewById(R.id.id);
-                mContentView = (TextView) view.findViewById(R.id.content);
+                mTvRecipeName = (TextView) view.findViewById(R.id.tv_recipe_name);
+                mTvServingsCount = (TextView) view.findViewById(R.id.tv_recipe_servings_amount);
+                mIvRecipeImage = (ImageView) view.findViewById(R.id.iv_recipe_picture);
             }
 
             @Override
             public String toString() {
-                return super.toString() + " '" + mContentView.getText() + "'";
+                return super.toString() + " '" + mTvRecipeName.getText() + "'";
             }
         }
     }
