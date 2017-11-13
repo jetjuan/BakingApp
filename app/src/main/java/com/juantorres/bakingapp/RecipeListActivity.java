@@ -13,13 +13,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.bumptech.glide.Glide;
 import com.juantorres.bakingapp.dummy.DummyContent;
 import com.juantorres.bakingapp.data.Recipe;
 import com.juantorres.bakingapp.data.json.RequestInterface;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -77,7 +81,7 @@ public class RecipeListActivity extends AppCompatActivity {
 
     }
 
-    private void loadJSON(){
+    private void loadJSON(final RecyclerView recyclerView){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://d17h27t6h515a5.cloudfront.net")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -87,12 +91,9 @@ public class RecipeListActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<Recipe>>() {
             @Override
             public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
-                List<Recipe> responses=  response.body();
-                Log.d("lol", response.body().get(0).getIngredients().get(0).getName() + "");
-//                JSONResponse jsonResponse = response.body();
-//                data = new ArrayList<>(Arrays.asList(jsonResponse.getRecipes()));
-//                adapter = new DataAdapter(data);
-//                recyclerView.setAdapter(adapter);
+                List<Recipe> recipes=  response.body();
+//                data = new ArrayList<>(Arrays.asList(recipes));
+                recyclerView.setAdapter(new RecipeRecyclerViewAdapter(recipes));
                 Log.d("Info", "Recipes downloaded successfully.");
             }
 
@@ -105,37 +106,48 @@ public class RecipeListActivity extends AppCompatActivity {
 
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+//        recyclerView.setAdapter(new RecipeRecyclerViewAdapter(DummyContent.ITEMS));
+        //TODO: check if internet connection
+        if (true) loadJSON(recyclerView);
     }
 
-    public class SimpleItemRecyclerViewAdapter
-            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
+    public class RecipeRecyclerViewAdapter
+            extends RecyclerView.Adapter<RecipeRecyclerViewAdapter.RecipeViewHolder> {
 
-        private final List<DummyContent.DummyItem> mValues;
+        private final List<Recipe> mRecipes;
 
-        public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
-            mValues = items;
+        public RecipeRecyclerViewAdapter(List<Recipe> items) {
+            mRecipes = items;
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.recipe_list_content, parent, false);
-            return new ViewHolder(view);
+            return new RecipeViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+        public void onBindViewHolder(final RecipeViewHolder holder, int position) {
+            holder.mItem = mRecipes.get(position);
+            holder.mTvRecipeName.setText(mRecipes.get(position).getName());
+            holder.mTvServingsCount.setText( String.valueOf(holder.mItem.getServings()));
+            String picUrl = holder.mItem.getImage();
+            if(!picUrl.equals("") && picUrl !=null){
+                Glide
+                        .with(getApplicationContext())
+                        .load(picUrl)
+                        //.centerCrop() TODO find out why this doesn't work
+//                        .placeholder()TODO add a spinner as a placeholder
+                        .into(holder.mIvRecipeImage);
+            }
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, holder.mItem.getIdAsString());
                         RecipeDetailFragment fragment = new RecipeDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -144,7 +156,7 @@ public class RecipeListActivity extends AppCompatActivity {
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, RecipeDetailActivity.class);
-                        intent.putExtra(RecipeDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        intent.putExtra(RecipeDetailFragment.ARG_ITEM_ID, holder.mItem.getIdAsString());
 
                         context.startActivity(intent);
                     }
@@ -154,25 +166,27 @@ public class RecipeListActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return mValues.size();
+            return mRecipes.size();
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
+        public class RecipeViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
-            public final TextView mIdView;
-            public final TextView mContentView;
-            public DummyContent.DummyItem mItem;
+            public final TextView mTvRecipeName;
+            public final TextView mTvServingsCount;
+            public final ImageView mIvRecipeImage;
+            public Recipe mItem;
 
-            public ViewHolder(View view) {
+            public RecipeViewHolder(View view) {
                 super(view);
                 mView = view;
-                mIdView = (TextView) view.findViewById(R.id.id);
-                mContentView = (TextView) view.findViewById(R.id.content);
+                mTvRecipeName = (TextView) view.findViewById(R.id.tv_recipe_name);
+                mTvServingsCount = (TextView) view.findViewById(R.id.tv_recipe_servings_amount);
+                mIvRecipeImage = (ImageView) view.findViewById(R.id.iv_recipe_picture);
             }
 
             @Override
             public String toString() {
-                return super.toString() + " '" + mContentView.getText() + "'";
+                return super.toString() + " '" + mTvRecipeName.getText() + "'";
             }
         }
     }
