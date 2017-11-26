@@ -1,19 +1,26 @@
 package com.juantorres.bakingapp.data;
 
 
+import org.parceler.Parcel;
+
 import java.util.List;
 
 /**
  * Created by juantorres on 11/6/17.
  */
-
+//TODO latest todo: use Parcelabler Library to convert Recipe, Steps and ingredients to Parcelable, then pass them as Extras to Detail Activity, then display all the ingredients
+@Parcel
 public class Recipe {
-    private long id;
-    private String name;
-    private int servings;
-    private String image;
-    private List<Ingredient> ingredients;
-    private List<Step> steps;
+    public long id;
+    public String name;
+    public int servings;
+    public String image;
+    public List<Ingredient> ingredients;
+    public List<Step> steps;
+
+    public Recipe(){
+
+    }
 
     public String getName(){
         return this.name;

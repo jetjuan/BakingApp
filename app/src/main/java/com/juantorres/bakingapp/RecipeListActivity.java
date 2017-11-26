@@ -21,6 +21,9 @@ import com.bumptech.glide.Glide;
 import com.juantorres.bakingapp.dummy.DummyContent;
 import com.juantorres.bakingapp.data.Recipe;
 import com.juantorres.bakingapp.data.json.RequestInterface;
+import com.juantorres.bakingapp.utils.IngredientsUtil;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +50,10 @@ public class RecipeListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
+
+    public final static String EXTRA_RECIPE = "EXTRA_RECIPE";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +164,9 @@ public class RecipeListActivity extends AppCompatActivity {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, RecipeDetailActivity.class);
                         intent.putExtra(RecipeDetailFragment.ARG_ITEM_ID, holder.mItem.getIdAsString());
+                        intent.putExtra(EXTRA_RECIPE, Parcels.wrap(holder.mItem));
+//                        intent.putStringArrayListExtra("ingredients", IngredientsUtil.getIngredientsStrings(holder.mItem.ingredients));
+//                        intent.putExtra("ingredients",))
 
                         context.startActivity(intent);
                     }

@@ -9,6 +9,7 @@
 
     //Labels
     <string name="label_servings">Servings: </string>
+    <string name="label_ingredients">Ingredients</string>
 
     //Tools
     <string name="tool_recipe_name">Android Pie</string>

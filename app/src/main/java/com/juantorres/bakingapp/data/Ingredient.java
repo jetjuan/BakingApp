@@ -2,15 +2,21 @@ package com.juantorres.bakingapp.data;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.parceler.Parcel;
+
 /**
  * Created by juantorres on 11/6/17.
  */
-
+@Parcel
 public class Ingredient {
-    private double quantity;
-    private String measure;
+    public double quantity;
+    public String measure;
     @SerializedName("ingredient")
-    private String name;
+    public String name;
+
+    public Ingredient(){
+
+    }
 
     public double getQuantity() {
         return quantity;

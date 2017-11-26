@@ -1,15 +1,21 @@
 package com.juantorres.bakingapp.data;
 
+import org.parceler.Parcel;
+
 /**
  * Created by juantorres on 11/6/17.
  */
-
+@Parcel
 public class Step {
-    private int id;
-    private String shortDescription;
-    private String description;
-    private String videoURL;
-    private String thumbnailURL;
+    public int id;
+    public String shortDescription;
+    public String description;
+    public String videoURL;
+    public String thumbnailURL;
+
+    public Step(){
+
+    }
 
     public int getId() {
         return id;
