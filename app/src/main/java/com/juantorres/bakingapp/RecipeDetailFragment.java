@@ -1,21 +1,26 @@
 package com.juantorres.bakingapp;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.juantorres.bakingapp.data.Recipe;
-import com.juantorres.bakingapp.dummy.DummyContent;
+import com.juantorres.bakingapp.data.Step;
 import com.juantorres.bakingapp.utils.IngredientsUtil;
 
 import org.parceler.Parcels;
@@ -24,6 +29,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.juantorres.bakingapp.RecipeListActivity.EXTRA_RECIPE;
 
 /**
  * A fragment representing a single Recipe detail screen.
@@ -43,6 +50,8 @@ public class RecipeDetailFragment extends Fragment {
      */
     private Recipe mItem;
     @BindView(R.id.ingredients) public TextView mIngredientsText;
+    @BindView(R.id.rv_steps)    public RecyclerView mStepsRecyclerView;
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -59,7 +68,7 @@ public class RecipeDetailFragment extends Fragment {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem = Parcels.unwrap(getArguments().getParcelable(RecipeListActivity.EXTRA_RECIPE));
+            mItem = Parcels.unwrap(getArguments().getParcelable(EXTRA_RECIPE));
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
@@ -67,8 +76,6 @@ public class RecipeDetailFragment extends Fragment {
                 appBarLayout.setTitle(mItem.getName());
             }
         }
-
-        ButterKnife.bind(this.getActivity());
     }
 
     @Override
@@ -76,17 +83,76 @@ public class RecipeDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.recipe_detail, container, false);
 
+        ButterKnife.bind(this, rootView);
+
+
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
             //Todo Complete this to retrieve
             String ingredientString = IngredientsUtil.getIngredientsStrings(mItem.getIngredients());
             mIngredientsText.setText(
                     Html.fromHtml(ingredientString));
+            mStepsRecyclerView.setAdapter( new StepsRecyclerViewAdapter(mItem.getSteps()));
 //            ((TextView) rootView.findViewById(R.id.ingredients)).setText(
 //                    Html.fromHtml(ingredientString));
         }
 
+
         return rootView;
+    }
+
+    public class StepsRecyclerViewAdapter
+            extends RecyclerView.Adapter<StepsRecyclerViewAdapter.StepsViewHolder> {
+
+        private final List<Step> mSteps;
+
+        public StepsRecyclerViewAdapter(List<Step> items) {
+            mSteps = items;
+        }
+
+        @Override
+        public StepsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.step_list_content, parent, false);
+            return new StepsViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(final StepsViewHolder holder, int position) {
+            holder.mStep = mSteps.get(position);
+            holder.mTvShortDescription.setText((position+1+" - ") + holder.mStep.getShortDescription() );
+
+
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO: add code to display Step detail
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return mSteps.size();
+        }
+
+        public class StepsViewHolder extends RecyclerView.ViewHolder {
+            public final View mView;
+            public final TextView mTvShortDescription;
+            public Step mStep;
+
+            public StepsViewHolder(View view) {
+                super(view);
+                mView = view;
+                mTvShortDescription = view.findViewById(R.id.tv_step_short_description);
+
+            }
+
+            @Override
+            public String toString() {
+                return super.toString() + " '" + mTvShortDescription.getText() + "'";
+            }
+        }
     }
 
 

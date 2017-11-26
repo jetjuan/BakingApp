@@ -10,8 +10,11 @@
     //Labels
     <string name="label_servings">Servings: </string>
     <string name="label_ingredients">Ingredients</string>
+    <string name="label_steps">Steps</string>
+
 
     //Tools
     <string name="tool_recipe_name">Android Pie</string>
     <string name="tool_reipe_servings">8</string>
+    <string name="tool_step">Prepare saturn</string>
 </resources>
