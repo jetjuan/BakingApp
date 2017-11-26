@@ -42,7 +42,6 @@ public class RecipeDetailFragment extends Fragment {
      * The dummy content this fragment is presenting.
      */
     private Recipe mItem;
-//    private List<String> mIngredients;
     @BindView(R.id.ingredients) public TextView mIngredientsText;
 
     /**
@@ -60,9 +59,7 @@ public class RecipeDetailFragment extends Fragment {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-//            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-            mItem = (Recipe)Parcels.unwrap(getArguments().getParcelable(RecipeListActivity.EXTRA_RECIPE));
-//            mIngredients = getArguments().getStringArrayList("ingredients");
+            mItem = Parcels.unwrap(getArguments().getParcelable(RecipeListActivity.EXTRA_RECIPE));
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
@@ -83,8 +80,10 @@ public class RecipeDetailFragment extends Fragment {
         if (mItem != null) {
             //Todo Complete this to retrieve
             String ingredientString = IngredientsUtil.getIngredientsStrings(mItem.getIngredients());
-            ((TextView) rootView.findViewById(R.id.ingredients)).setText(
+            mIngredientsText.setText(
                     Html.fromHtml(ingredientString));
+//            ((TextView) rootView.findViewById(R.id.ingredients)).setText(
+//                    Html.fromHtml(ingredientString));
         }
 
         return rootView;
