@@ -1,7 +1,6 @@
 package com.juantorres.bakingapp;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
@@ -11,14 +10,8 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.juantorres.bakingapp.data.Recipe;
 import com.juantorres.bakingapp.data.Step;
 import com.juantorres.bakingapp.utils.IngredientsUtil;
@@ -44,11 +37,13 @@ public class RecipeDetailFragment extends Fragment {
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
+    public static final String ARG_STEP = "ARG_STEP";
 
     /**
      * The dummy content this fragment is presenting.
      */
     private Recipe mItem;
+    private boolean mTabletView;
     @BindView(R.id.ingredients) public TextView mIngredientsText;
     @BindView(R.id.rv_steps)    public RecyclerView mStepsRecyclerView;
 
@@ -127,6 +122,13 @@ public class RecipeDetailFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     //TODO: add code to display Step detail
+                    if(mTabletView){
+                        //Todo add code in case app is running on Tablet
+                    }else{
+                        Intent intent = new Intent(getContext(), StepActivity.class);
+                        intent.putExtra(ARG_STEP, Parcels.wrap(holder.mStep) );
+                        startActivity(intent);
+                    }
                 }
             });
         }
