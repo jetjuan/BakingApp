@@ -37,7 +37,10 @@ public class RecipeDetailFragment extends Fragment {
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
-    public static final String ARG_STEP = "ARG_STEP";
+//    public static final String ARG_STEP = "ARG_STEP";
+    public static final String ARG_STEPS = "ARG_STEPS";
+    public static final String ARG_STEP_INDEX = "ARG_STEP_INDEX";
+
 
     /**
      * The dummy content this fragment is presenting.
@@ -113,9 +116,9 @@ public class RecipeDetailFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(final StepsViewHolder holder, int position) {
+        public void onBindViewHolder(final StepsViewHolder holder, final int position) {
             holder.mStep = mSteps.get(position);
-            holder.mTvShortDescription.setText((position+1+" - ") + holder.mStep.getShortDescription() );
+            holder.mTvShortDescription.setText(((position+1)+" - ") + holder.mStep.getShortDescription() );
 
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -126,7 +129,9 @@ public class RecipeDetailFragment extends Fragment {
                         //Todo add code in case app is running on Tablet
                     }else{
                         Intent intent = new Intent(getContext(), StepActivity.class);
-                        intent.putExtra(ARG_STEP, Parcels.wrap(holder.mStep) );
+//                        intent.putExtra(ARG_STEP, Parcels.wrap(holder.mStep) );
+                        intent.putExtra(ARG_STEPS, Parcels.wrap(mItem.getSteps()));
+                        intent.putExtra(ARG_STEP_INDEX, position);
                         startActivity(intent);
                     }
                 }
