@@ -118,13 +118,13 @@ public class RecipeDetailFragment extends Fragment {
         @Override
         public void onBindViewHolder(final StepsViewHolder holder, final int position) {
             holder.mStep = mSteps.get(position);
-            holder.mTvShortDescription.setText(((position+1)+" - ") + holder.mStep.getShortDescription() );
+            String shortDescription = (position == 0) ? holder.mStep.getShortDescription() : (position+" - " + holder.mStep.getShortDescription());
+            holder.mTvShortDescription.setText(shortDescription );
 
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO: add code to display Step detail
                     if(mTabletView){
                         //Todo add code in case app is running on Tablet
                     }else{

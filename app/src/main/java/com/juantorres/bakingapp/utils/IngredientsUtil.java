@@ -49,9 +49,14 @@ public  class IngredientsUtil {
         initializeMap();
         String friendlyMeasure = UnitsMap.get(i.getMeasure());
 
-        if(i.getQuantity() > 1) friendlyMeasure += "s";
 
-        return i.getQuantity() + " " + friendlyMeasure  + " of " +i.getName();
+        if(i.getQuantity() > 1) friendlyMeasure += "s";
+        friendlyMeasure = friendlyMeasure.replace(".0", "");
+
+        String result = i.getQuantity() + " " + friendlyMeasure  + " of " +i.getName();
+        result = result.replace(".0", "");
+
+        return result;
     }
 
     public static String getIngredientsStrings(List<Ingredient> ingredients){
