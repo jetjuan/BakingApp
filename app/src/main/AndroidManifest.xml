@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.juantorres.bakingapp">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -28,12 +32,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.juantorres.bakingapp.RecipeListActivity" />
         </activity>
-
-
+        <activity
+            android:name=".StepActivity"
+            android:label="@string/title_activity_step_detail"
+            android:parentActivityName=".RecipeDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.juantorres.bakingapp.RecipeDetailActivity" />
+        </activity>
     </application>
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
 </manifest>

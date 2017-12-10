@@ -18,12 +18,12 @@ import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
-import com.juantorres.bakingapp.dummy.DummyContent;
 import com.juantorres.bakingapp.data.Recipe;
 import com.juantorres.bakingapp.data.json.RequestInterface;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import org.parceler.Parcels;
+
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -47,6 +47,10 @@ public class RecipeListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
+
+    public final static String EXTRA_RECIPE = "EXTRA_RECIPE";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +87,7 @@ public class RecipeListActivity extends AppCompatActivity {
 
     private void loadJSON(final RecyclerView recyclerView){
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://d17h27t6h515a5.cloudfront.net")
+                .baseUrl(getResources().getString(R.string.recipe_api_domain))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         final RequestInterface request = retrofit.create(RequestInterface.class);
@@ -157,7 +161,7 @@ public class RecipeListActivity extends AppCompatActivity {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, RecipeDetailActivity.class);
                         intent.putExtra(RecipeDetailFragment.ARG_ITEM_ID, holder.mItem.getIdAsString());
-
+                        intent.putExtra(EXTRA_RECIPE, Parcels.wrap(holder.mItem));
                         context.startActivity(intent);
                     }
                 }
