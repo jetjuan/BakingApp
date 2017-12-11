@@ -1,10 +1,12 @@
 package com.juantorres.bakingapp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -74,12 +76,14 @@ public class RecipeDetailFragment extends Fragment {
                 appBarLayout.setTitle(mItem.getName());
             }
         }
+
+        mTabletView = !(getActivity().findViewById(R.id.two_pane_separator) == null);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.recipe_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_recipe_detail, container, false);
 
         ButterKnife.bind(this, rootView);
 
@@ -117,6 +121,7 @@ public class RecipeDetailFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(final StepsViewHolder holder, final int position) {
+
             holder.mStep = mSteps.get(position);
             String shortDescription = (position == 0) ? holder.mStep.getShortDescription() : (position+" - " + holder.mStep.getShortDescription());
             holder.mTvShortDescription.setText(shortDescription );
@@ -127,6 +132,7 @@ public class RecipeDetailFragment extends Fragment {
                 public void onClick(View v) {
                     if(mTabletView){
                         //Todo add code in case app is running on Tablet
+                        ((RecipeDetailActivity) getActivity()).displayStepFragment( mItem.getSteps(), position);
                     }else{
                         Intent intent = new Intent(getContext(), StepActivity.class);
 //                        intent.putExtra(ARG_STEP, Parcels.wrap(holder.mStep) );
