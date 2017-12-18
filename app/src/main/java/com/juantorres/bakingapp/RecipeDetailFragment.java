@@ -1,12 +1,10 @@
 package com.juantorres.bakingapp;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -42,13 +40,14 @@ public class RecipeDetailFragment extends Fragment {
 //    public static final String ARG_STEP = "ARG_STEP";
     public static final String ARG_STEPS = "ARG_STEPS";
     public static final String ARG_STEP_INDEX = "ARG_STEP_INDEX";
+    public static final String ARG_IS_TABLET_VIEW = "ARG_IS_TABLET_VIEW";
 
 
     /**
      * The dummy content this fragment is presenting.
      */
     private Recipe mItem;
-    private boolean mTabletView;
+    private boolean mIsTabletView;
     @BindView(R.id.ingredients) public TextView mIngredientsText;
     @BindView(R.id.rv_steps)    public RecyclerView mStepsRecyclerView;
 
@@ -77,7 +76,12 @@ public class RecipeDetailFragment extends Fragment {
             }
         }
 
-        mTabletView = !(getActivity().findViewById(R.id.two_pane_separator) == null);
+        if (savedInstanceState == null){
+            mIsTabletView = !(getActivity().findViewById(R.id.two_pane_separator) == null);
+
+        }else {
+            mIsTabletView = savedInstanceState.getBoolean(ARG_IS_TABLET_VIEW);
+        }
     }
 
     @Override
@@ -101,6 +105,12 @@ public class RecipeDetailFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(ARG_IS_TABLET_VIEW, mIsTabletView );
     }
 
     public class StepsRecyclerViewAdapter
@@ -130,7 +140,7 @@ public class RecipeDetailFragment extends Fragment {
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mTabletView){
+                    if(mIsTabletView){
                         //Todo add code in case app is running on Tablet
                         ((RecipeDetailActivity) getActivity()).displayStepFragment( mItem.getSteps(), position);
                     }else{
