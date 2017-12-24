@@ -2,6 +2,7 @@ package com.juantorres.bakingapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -41,6 +42,7 @@ public class RecipeDetailFragment extends Fragment {
     public static final String ARG_STEPS = "ARG_STEPS";
     public static final String ARG_STEP_INDEX = "ARG_STEP_INDEX";
     public static final String ARG_IS_TABLET_VIEW = "ARG_IS_TABLET_VIEW";
+    public static final String ARG_SELECTED_STEP_POSITION = "ARG_SELECTED_STEP_POSITION";
 
 
     /**
@@ -48,6 +50,7 @@ public class RecipeDetailFragment extends Fragment {
      */
     private Recipe mItem;
     private boolean mIsTabletView;
+    private View mSelectedStep;
     @BindView(R.id.ingredients) public TextView mIngredientsText;
     @BindView(R.id.rv_steps)    public RecyclerView mStepsRecyclerView;
 
@@ -111,10 +114,11 @@ public class RecipeDetailFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(ARG_IS_TABLET_VIEW, mIsTabletView );
+//        outState.putInt(ARG_SELECTED_STEP_POSITION, mStepsRecyclerView.getChildLayoutPosition(mSelectedStep));
     }
 
     public class StepsRecyclerViewAdapter
-            extends RecyclerView.Adapter<StepsRecyclerViewAdapter.StepsViewHolder> {
+            extends RecyclerView.Adapter<StepsRecyclerViewAdapter.StepsViewHolder> implements View.OnClickListener {
 
         private final List<Step> mSteps;
 
@@ -137,26 +141,31 @@ public class RecipeDetailFragment extends Fragment {
             holder.mTvShortDescription.setText(shortDescription );
 
 
-            holder.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(mIsTabletView){
-                        //Todo add code in case app is running on Tablet
-                        ((RecipeDetailActivity) getActivity()).displayStepFragment( mItem.getSteps(), position);
-                    }else{
-                        Intent intent = new Intent(getContext(), StepActivity.class);
-//                        intent.putExtra(ARG_STEP, Parcels.wrap(holder.mStep) );
-                        intent.putExtra(ARG_STEPS, Parcels.wrap(mItem.getSteps()));
-                        intent.putExtra(ARG_STEP_INDEX, position);
-                        startActivity(intent);
-                    }
-                }
-            });
+            holder.mView.setOnClickListener(this);
+            holder.mView.setTag(position);
         }
 
         @Override
         public int getItemCount() {
             return mSteps.size();
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = (int)v.getTag();
+
+            if(mIsTabletView){
+                //Todo add code in case app is running on Tablet
+                selectStep(position);
+
+                ((RecipeDetailActivity) getActivity()).displayStepFragment( mItem.getSteps(), position);
+            }else{
+                Intent intent = new Intent(getContext(), StepActivity.class);
+//                        intent.putExtra(ARG_STEP, Parcels.wrap(holder.mStep) );
+                intent.putExtra(ARG_STEPS, Parcels.wrap(mItem.getSteps()));
+                intent.putExtra(ARG_STEP_INDEX, position);
+                startActivity(intent);
+            }
         }
 
         public class StepsViewHolder extends RecyclerView.ViewHolder {
@@ -176,6 +185,18 @@ public class RecipeDetailFragment extends Fragment {
                 return super.toString() + " '" + mTvShortDescription.getText() + "'";
             }
         }
+    }
+
+    private void selectStep(int position){
+        View newSelectedStep = mStepsRecyclerView.getLayoutManager().getChildAt(position);
+
+        if (mSelectedStep != null){
+            mSelectedStep.setBackgroundColor( newSelectedStep.getSolidColor());
+        }
+
+
+        mSelectedStep = newSelectedStep;
+        mSelectedStep.setBackgroundColor(getResources().getColor(R.color.colorAccent));
     }
 
 

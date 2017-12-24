@@ -11,4 +11,7 @@
     <color name="colorSecondary_text">#757575</color>
     <color name="colorIcons">#FFFFFF</color>
     <color name="colorDivider">#BDBDBD</color>
+
+    <!--Default background color-->
+    <color name="colorDefaultBackgrondColor">#FAFAFA</color>
 </resources>
