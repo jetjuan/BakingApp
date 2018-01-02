@@ -189,7 +189,7 @@ public class RecipeDetailFragment extends Fragment {
         }
     }
 
-    private void selectStep(int position){
+    public void selectStep(int position){
         if(position <0) return;
 
         if((mSelectedIndex != position) && mSelectedIndex >= 0 ) mStepsRecyclerView.getLayoutManager().getChildAt(mSelectedIndex)
@@ -199,7 +199,7 @@ public class RecipeDetailFragment extends Fragment {
                 .setBackgroundColor( getResources().getColor(R.color.colorAccent));
 
         mSelectedIndex = position;
-        
+
     }
 
 
