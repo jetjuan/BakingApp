@@ -50,7 +50,7 @@ public class RecipeDetailFragment extends Fragment {
      */
     private Recipe mItem;
     private boolean mIsTabletView;
-    private View mSelectedStep;
+    private int mSelectedIndex = -1;
     @BindView(R.id.ingredients) public TextView mIngredientsText;
     @BindView(R.id.rv_steps)    public RecyclerView mStepsRecyclerView;
 
@@ -84,6 +84,7 @@ public class RecipeDetailFragment extends Fragment {
 
         }else {
             mIsTabletView = savedInstanceState.getBoolean(ARG_IS_TABLET_VIEW);
+            mSelectedIndex = savedInstanceState.getInt(ARG_SELECTED_STEP_POSITION);
         }
     }
 
@@ -114,7 +115,7 @@ public class RecipeDetailFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(ARG_IS_TABLET_VIEW, mIsTabletView );
-//        outState.putInt(ARG_SELECTED_STEP_POSITION, mStepsRecyclerView.getChildLayoutPosition(mSelectedStep));
+        outState.putInt(ARG_SELECTED_STEP_POSITION, mSelectedIndex);
     }
 
     public class StepsRecyclerViewAdapter
@@ -143,6 +144,7 @@ public class RecipeDetailFragment extends Fragment {
 
             holder.mView.setOnClickListener(this);
             holder.mView.setTag(position);
+            if (mSelectedIndex == position) holder.mView.setBackgroundColor(getResources().getColor(R.color.colorAccent));
         }
 
         @Override
@@ -188,15 +190,16 @@ public class RecipeDetailFragment extends Fragment {
     }
 
     private void selectStep(int position){
-        View newSelectedStep = mStepsRecyclerView.getLayoutManager().getChildAt(position);
+        if(position <0) return;
 
-        if (mSelectedStep != null){
-            mSelectedStep.setBackgroundColor( newSelectedStep.getSolidColor());
-        }
+        if((mSelectedIndex != position) && mSelectedIndex >= 0 ) mStepsRecyclerView.getLayoutManager().getChildAt(mSelectedIndex)
+                .setBackgroundColor( mStepsRecyclerView.getSolidColor());
 
+        mStepsRecyclerView.getLayoutManager().getChildAt(position)
+                .setBackgroundColor( getResources().getColor(R.color.colorAccent));
 
-        mSelectedStep = newSelectedStep;
-        mSelectedStep.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        mSelectedIndex = position;
+        
     }
 
 
