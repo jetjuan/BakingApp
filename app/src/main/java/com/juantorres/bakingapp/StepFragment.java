@@ -141,34 +141,43 @@ public class StepFragment extends Fragment {
 
         if(mStepIndex > 0){
             mLeftArrow.setVisibility(View.VISIBLE);
-            mLeftArrow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Activity act = getActivity();
-                    if(act instanceof OnStepFragmentListener){
-                        ((OnStepFragmentListener) act).onArrowClicked(mSteps, --mStepIndex);
-                    }else {
-                        Log.e("Error", "Container activity doesn't implement OnStepFragmentListener");
-                    }
-                }
-            });
+            mLeftArrow.setOnClickListener(arrowClickListener);
 
         }
 
         if(mStepIndex < mSteps.size()-1){
             mRightArrow.setVisibility(View.VISIBLE);
-            mRightArrow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Activity act = getActivity();
-                    if(act instanceof OnStepFragmentListener){
-                        ((OnStepFragmentListener) act).onArrowClicked(mSteps, ++mStepIndex);
-                    }else {
-                        Log.e("Error", "Container activity doesn't implement OnStepFragmentListener");
-                    }                }
-            });
+            mRightArrow.setOnClickListener(arrowClickListener);
         }
 
 
     }
+
+    private View.OnClickListener arrowClickListener= new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int newStepIndex = 0;
+
+                switch (view.getId()){
+                    case R.id.right_arrow:
+                        newStepIndex = ++mStepIndex;
+                        break;
+                    case R.id.left_arrow:
+                        newStepIndex = --mStepIndex;
+                        break;
+                }
+
+                Activity act = getActivity();
+                if(act instanceof OnStepFragmentListener){
+                    ((OnStepFragmentListener) act).onArrowClicked(mSteps, newStepIndex);
+                }
+
+                if(act instanceof RecipeDetailActivity) {
+                    RecipeDetailActivity recipeDetailActivity = (RecipeDetailActivity) act;
+                    RecipeDetailFragment fragment = (RecipeDetailFragment) recipeDetailActivity.getSupportFragmentManager().findFragmentById(R.id.recipe_detail_container);
+//                    if (fragment != null)
+                        fragment.selectStep(newStepIndex);
+                }
+            }
+        };
 }
