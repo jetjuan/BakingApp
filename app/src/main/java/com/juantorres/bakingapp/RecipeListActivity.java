@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.juantorres.bakingapp.data.Recipe;
 import com.juantorres.bakingapp.data.json.RequestInterface;
 
@@ -122,11 +123,15 @@ public class RecipeListActivity extends AppCompatActivity {
             holder.mTvServingsCount.setText( String.valueOf(holder.mItem.getServings()));
             String picUrl = holder.mItem.getImage();
             if(!picUrl.equals("") && picUrl !=null){
+                RequestOptions requestOptions = new RequestOptions();
+                requestOptions.placeholder(R.drawable.ic_recipe);
+                requestOptions.error(R.drawable.ic_recipe);
+
                 Glide
                         .with(getApplicationContext())
+                        .setDefaultRequestOptions(requestOptions)
                         .load(picUrl)
                         //.centerCrop() TODO find out why this doesn't work
-//                        .placeholder()TODO add a spinner as a placeholder
                         .into(holder.mIvRecipeImage);
             }
 
