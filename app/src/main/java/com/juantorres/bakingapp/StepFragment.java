@@ -6,17 +6,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
@@ -31,6 +29,7 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.juantorres.bakingapp.data.Step;
+import com.juantorres.bakingapp.utils.ImageUtils;
 
 import org.parceler.Parcels;
 
@@ -61,8 +60,10 @@ public class StepFragment extends Fragment {
     public View mLeftArrow;
     @BindView(R.id.right_arrow)
     public View mRightArrow;
-    @BindView(R.id.video_container)
+    @BindView(R.id.video_player_view)
     public SimpleExoPlayerView mExoPlayerView;
+    @BindView(R.id.video_thumb)
+    public ImageView mVideoThumb;
 
     private OnFragmentInteractionListener mListener;
 
@@ -108,13 +109,6 @@ public class StepFragment extends Fragment {
         ButterKnife.bind(this, rootView);
         displayStepData();
 
-        //TODO DELETE ME
-        mTvLongDescription.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createExoPlayer();
-            }
-        });
         // Inflate the layout for this fragment
         return rootView;
     }
@@ -147,7 +141,7 @@ public class StepFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (mExoPlayer !=null && mExoPlayer.getPlayWhenReady()) mExoPlayer.setPlayWhenReady(false);
+        if (mExoPlayer !=null ) mExoPlayer.setPlayWhenReady(false);
     }
 
     @Override
@@ -185,41 +179,40 @@ public class StepFragment extends Fragment {
     }
 
     private void displayStepData(){
-        mTvLongDescription.setText(mCurrentStep.getDescription());
-        mTvShortDescription.setText(mCurrentStep.getShortDescription());
+        final String stepDescription = mCurrentStep.getDescription();
+        final String stepShortDescription = mCurrentStep.getShortDescription();
+        final String thumbnailURL = mCurrentStep.getThumbnailURL();
+        final String videoURL = mCurrentStep.getVideoURL();
+        final int firstStepIndex = 0;
+        final int lastStepIndex = mSteps.size()-1;
 
-        if(mStepIndex > 0){
+        mTvLongDescription.setText(stepDescription);
+        mTvShortDescription.setText(stepShortDescription);
+
+        if(mStepIndex > firstStepIndex){
             mLeftArrow.setVisibility(View.VISIBLE);
             mLeftArrow.setOnClickListener(arrowClickListener);
 
         }
 
-        if(mStepIndex < mSteps.size()-1){
+        if(mStepIndex < lastStepIndex){
             mRightArrow.setVisibility(View.VISIBLE);
             mRightArrow.setOnClickListener(arrowClickListener);
         }
 
-        if ((mCurrentStep != null) && !mCurrentStep.getVideoURL().isEmpty()) {
+        if(( thumbnailURL != null) && !thumbnailURL.isEmpty() && ImageUtils.isImage(thumbnailURL)){
+            displayVideoThumb(thumbnailURL);
+            mVideoThumb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mVideoThumb.setVisibility(View.GONE);
+                    createExoPlayer();
+                }
+            });
+
+        }else if ((videoURL != null) && !videoURL.isEmpty()) {
             createExoPlayer();
-        }else {
-            mExoPlayerView.setVisibility(View.GONE);
         }
-
-        //TODO implement video thumb
-//        String thumbnailURL  = mCurrentStep.getThumbnailURL();
-//        if(!thumbnailURL.equals("") && thumbnailURL !=null){
-//            RequestOptions requestOptions = new RequestOptions();
-//            requestOptions.placeholder(R.drawable.ic_recipe);
-//            requestOptions.error(R.drawable.ic_recipe);
-//
-//            Glide
-//                    .with(getContext())
-//                    .setDefaultRequestOptions(requestOptions)
-//                    .load(thumbnailURL)
-//                    //.centerCrop() TODO find out why this doesn't work
-//                    .into(mExoPlayerView);
-//        }
-
 
     }
 
@@ -268,6 +261,7 @@ public class StepFragment extends Fragment {
 
         //3. Attaching the player
         mExoPlayerView.setPlayer(mExoPlayer);
+        mExoPlayerView.setVisibility(View.VISIBLE);
 
         //4. Prepare the player
         prepareVideoPlayer();
@@ -286,10 +280,23 @@ public class StepFragment extends Fragment {
                 Util.getUserAgent(getContext(), "yourApplicationName"), bandwidthMeter);
     // This is the MediaSource representing the media to be played.
         MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
-//                .createMediaSource(Uri.parse("https://www.w3schools.com/html/mov_bbb.mp4"));
                 .createMediaSource(Uri.parse(mCurrentStep.getVideoURL()));
 
         // Prepare the player with the source.
         mExoPlayer.prepare(videoSource);
+    }
+
+    private void displayVideoThumb(String thumbUrl){
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.placeholder(R.drawable.ic_recipe);
+        requestOptions.error(R.drawable.ic_recipe);
+
+        Glide
+                .with(getContext())
+                .setDefaultRequestOptions(requestOptions)
+                .load(thumbUrl)
+                .into(mVideoThumb);
+
+        mVideoThumb.setVisibility(View.VISIBLE);
     }
 }
