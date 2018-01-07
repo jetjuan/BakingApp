@@ -185,6 +185,7 @@ public class StepFragment extends Fragment {
         final String videoURL = mCurrentStep.getVideoURL();
         final int firstStepIndex = 0;
         final int lastStepIndex = mSteps.size()-1;
+        final boolean stepHasVideo = (videoURL != null) && !videoURL.isEmpty();
 
         mTvLongDescription.setText(stepDescription);
         mTvShortDescription.setText(stepShortDescription);
@@ -206,11 +207,11 @@ public class StepFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     mVideoThumb.setVisibility(View.GONE);
-                    createExoPlayer();
+                    if (stepHasVideo)createExoPlayer();
                 }
             });
 
-        }else if ((videoURL != null) && !videoURL.isEmpty()) {
+        }else if (stepHasVideo) {
             createExoPlayer();
         }
 
