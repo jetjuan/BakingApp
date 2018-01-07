@@ -48,6 +48,12 @@ dependencies {
     compile 'org.parceler:parceler-api:1.1.9'
     annotationProcessor 'org.parceler:parceler:1.1.9'
 
+    //ExoPlayer!
+    compile 'com.google.android.exoplayer:exoplayer-core:2.6.1'
+    compile 'com.google.android.exoplayer:exoplayer-ui:2.6.1'
+//    compile 'com.google.android.exoplayer:exoplayer-dash:2.6.1'
+//compile 'com.google.android.exoplayer:exoplayer:2.6.1'
+
 
     testCompile 'junit:junit:4.12'
 }
