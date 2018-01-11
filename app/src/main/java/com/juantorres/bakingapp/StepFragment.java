@@ -39,15 +39,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link StepFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link StepFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class StepFragment extends Fragment {
     private String RESUME_WINDOW_KEY  = "RESUME_WINDOW_KEY";
     private String RESUME_POSITION_KEY = "RESUME_POSITION_KEY";
@@ -70,28 +61,8 @@ public class StepFragment extends Fragment {
     @BindView(R.id.video_thumb)
     public ImageView mVideoThumb;
 
-    private OnFragmentInteractionListener mListener;
-
     public StepFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param step Parameter Step.
-     * @return A new instance of fragment StepFragment.
-     */
-    public static StepFragment newInstance(Step step) {
-        StepFragment fragment = new StepFragment();
-        Bundle args = new Bundle();
-        args.putParcelable(RecipeDetailFragment.ARG_STEPS, Parcels.wrap(step));
-        args.putParcelable(RecipeDetailFragment.ARG_STEP_INDEX, Parcels.wrap(step));
-
-
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -103,7 +74,7 @@ public class StepFragment extends Fragment {
             mCurrentStep = mSteps.get(mStepIndex);
 
         }
-        
+
         if(savedInstanceState != null){
             resumePosition = savedInstanceState.getLong(RESUME_POSITION_KEY);
             resumeWindow = savedInstanceState.getInt(RESUME_WINDOW_KEY);
@@ -123,13 +94,6 @@ public class StepFragment extends Fragment {
         return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -145,7 +109,6 @@ public class StepFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     @Override
@@ -166,8 +129,7 @@ public class StepFragment extends Fragment {
     public void onStop() {
         super.onStop();
         if(mExoPlayer != null){
-            mExoPlayer.stop();
-            mExoPlayer.release();
+            releasePlayer();
         }
     }
 
@@ -180,20 +142,6 @@ public class StepFragment extends Fragment {
 
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 
     public interface OnStepFragmentListener{
         void onArrowClicked(List<Step> steps, int stepIndex);
