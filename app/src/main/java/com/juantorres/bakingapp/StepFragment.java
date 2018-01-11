@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -48,10 +49,14 @@ import butterknife.ButterKnife;
  * create an instance of this fragment.
  */
 public class StepFragment extends Fragment {
+    private String RESUME_WINDOW_KEY  = "RESUME_WINDOW_KEY";
+    private String RESUME_POSITION_KEY = "RESUME_POSITION_KEY";
     private Step mCurrentStep;
     private List<Step> mSteps;
     private int mStepIndex;
     private SimpleExoPlayer mExoPlayer;
+    private int resumeWindow;
+    private long resumePosition;
     @BindView(R.id.tv_short_description)
     public TextView mTvShortDescription;
     @BindView(R.id.tv_step_long_description)
@@ -98,6 +103,11 @@ public class StepFragment extends Fragment {
             mCurrentStep = mSteps.get(mStepIndex);
 
         }
+        
+        if(savedInstanceState != null){
+            resumePosition = savedInstanceState.getLong(RESUME_POSITION_KEY);
+            resumeWindow = savedInstanceState.getInt(RESUME_WINDOW_KEY);
+        }
     }
 
     @Override
@@ -141,13 +151,15 @@ public class StepFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (mExoPlayer !=null ) mExoPlayer.setPlayWhenReady(false);
+        if (mExoPlayer !=null ) releasePlayer();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-//        if (mExoPlayer !=null && !mExoPlayer.getPlayWhenReady()) mExoPlayer.setPlayWhenReady(true);
+        if (mExoPlayer == null && stepHasVideo()) {
+            createExoPlayer();
+        }
     }
 
     @Override
@@ -157,6 +169,15 @@ public class StepFragment extends Fragment {
             mExoPlayer.stop();
             mExoPlayer.release();
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(RESUME_POSITION_KEY, resumePosition);
+        outState.putInt(RESUME_WINDOW_KEY, resumeWindow);
+
+
     }
 
     /**
@@ -185,7 +206,6 @@ public class StepFragment extends Fragment {
         final String videoURL = mCurrentStep.getVideoURL();
         final int firstStepIndex = 0;
         final int lastStepIndex = mSteps.size()-1;
-        final boolean stepHasVideo = (videoURL != null) && !videoURL.isEmpty();
 
         mTvLongDescription.setText(stepDescription);
         mTvShortDescription.setText(stepShortDescription);
@@ -207,12 +227,10 @@ public class StepFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     mVideoThumb.setVisibility(View.GONE);
-                    if (stepHasVideo)createExoPlayer();
+                    if (stepHasVideo())createExoPlayer();
                 }
             });
 
-        }else if (stepHasVideo) {
-            createExoPlayer();
         }
 
     }
@@ -279,6 +297,13 @@ public class StepFragment extends Fragment {
     // Produces DataSource instances through which media data is loaded.
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(),
                 Util.getUserAgent(getContext(), "yourApplicationName"), bandwidthMeter);
+
+
+        boolean haveResumePosition = resumeWindow != C.INDEX_UNSET;
+        if (haveResumePosition) {
+            mExoPlayer.seekTo(resumeWindow, resumePosition);
+        }
+
     // This is the MediaSource representing the media to be played.
         MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(Uri.parse(mCurrentStep.getVideoURL()));
@@ -300,4 +325,25 @@ public class StepFragment extends Fragment {
 
         mVideoThumb.setVisibility(View.VISIBLE);
     }
+
+    private void releasePlayer() {
+        if (mExoPlayer != null) {
+            updateResumePosition();
+            mExoPlayer.stop();
+            mExoPlayer.release();
+            mExoPlayer = null;
+        }
+    }
+
+    private void updateResumePosition() {
+        resumeWindow = mExoPlayer.getCurrentWindowIndex();
+        resumePosition = mExoPlayer.isCurrentWindowSeekable() ? Math.max(0, mExoPlayer.getCurrentPosition())
+                : C.TIME_UNSET;
+    }
+
+    private boolean stepHasVideo(){
+        String videoURL = mCurrentStep.getVideoURL();
+        return (videoURL!= null) && !videoURL.isEmpty();
+    }
+
 }
