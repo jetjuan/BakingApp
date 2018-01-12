@@ -30,11 +30,6 @@ public class StepActivity extends AppCompatActivity implements StepFragment.OnSt
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //TODo setup Step
-        List<Step> steps = Parcels.unwrap(getIntent().getExtras().getParcelable(RecipeDetailFragment.ARG_STEPS));
-        int index = getIntent().getExtras().getInt(RecipeDetailFragment.ARG_STEP_INDEX);
-//        Step mCurrentStep = steps.get(index);
-
 
         if (savedInstanceState == null) {
             createStepFragment();
@@ -46,9 +41,9 @@ public class StepActivity extends AppCompatActivity implements StepFragment.OnSt
 
     private void createStepFragment(){
         Bundle arguments = new Bundle();
-//        arguments.putParcelable(RecipeDetailFragment.ARG_STEP, getIntent().getParcelableExtra(RecipeDetailFragment.ARG_STEP));
         arguments.putParcelable(RecipeDetailFragment.ARG_STEPS, getIntent().getParcelableExtra(RecipeDetailFragment.ARG_STEPS));
         arguments.putInt(RecipeDetailFragment.ARG_STEP_INDEX, getIntent().getIntExtra(RecipeDetailFragment.ARG_STEP_INDEX, 0));
+        arguments.putBoolean(RecipeDetailFragment.ARG_IS_TABLET_VIEW, getIntent().getBooleanExtra(RecipeDetailFragment.ARG_IS_TABLET_VIEW, true));
         StepFragment fragment = new StepFragment();
         fragment.setArguments(arguments);
 
@@ -61,9 +56,10 @@ public class StepActivity extends AppCompatActivity implements StepFragment.OnSt
 
     private void replaceStepFragment(List<Step> steps, int stepIndex){
         Bundle arguments = new Bundle();
-//        arguments.putParcelable(RecipeDetailFragment.ARG_STEP, getIntent().getParcelableExtra(RecipeDetailFragment.ARG_STEP));
         arguments.putParcelable(RecipeDetailFragment.ARG_STEPS, Parcels.wrap(steps));
         arguments.putInt(RecipeDetailFragment.ARG_STEP_INDEX, stepIndex);
+        arguments.putBoolean(RecipeDetailFragment.ARG_IS_TABLET_VIEW, getIntent().getBooleanExtra(RecipeDetailFragment.ARG_IS_TABLET_VIEW, true));
+
         StepFragment fragment = new StepFragment();
         fragment.setArguments(arguments);
 

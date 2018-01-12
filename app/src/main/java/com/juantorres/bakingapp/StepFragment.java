@@ -2,10 +2,14 @@ package com.juantorres.bakingapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,16 +52,24 @@ public class StepFragment extends Fragment {
     private SimpleExoPlayer mExoPlayer;
     private int resumeWindow;
     private long resumePosition;
+    private boolean shouldDisplayVideoThumb;
+    private boolean isTabletView;
+    @Nullable
     @BindView(R.id.tv_short_description)
     public TextView mTvShortDescription;
+    @Nullable
     @BindView(R.id.tv_step_long_description)
     public TextView mTvLongDescription;
+    @Nullable
     @BindView(R.id.left_arrow)
     public View mLeftArrow;
+    @Nullable
     @BindView(R.id.right_arrow)
     public View mRightArrow;
+    @Nullable
     @BindView(R.id.video_player_view)
     public SimpleExoPlayerView mExoPlayerView;
+    @Nullable
     @BindView(R.id.video_thumb)
     public ImageView mVideoThumb;
 
@@ -73,22 +85,37 @@ public class StepFragment extends Fragment {
             mStepIndex = getArguments().getInt(RecipeDetailFragment.ARG_STEP_INDEX);
             mCurrentStep = mSteps.get(mStepIndex);
 
+            String thumbnailURL = mCurrentStep.getThumbnailURL();
+            isTabletView = getArguments().getBoolean(RecipeDetailFragment.ARG_IS_TABLET_VIEW, true);
+            shouldDisplayVideoThumb = TextUtils.isEmpty(thumbnailURL) && ImageUtils.isImage(thumbnailURL);
         }
 
         if(savedInstanceState != null){
             resumePosition = savedInstanceState.getLong(RESUME_POSITION_KEY);
             resumeWindow = savedInstanceState.getInt(RESUME_WINDOW_KEY);
+            isTabletView = savedInstanceState.getBoolean(RecipeDetailFragment.ARG_IS_TABLET_VIEW, true);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_step, container, false);
+        boolean displayVideoFullscreen =  !TextUtils.isEmpty(mCurrentStep.getVideoURL())
+                && !isTabletView
+                && getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+
+        View rootView =  displayVideoFullscreen ?
+                inflater.inflate(R.layout.fragment_fullscreen_step_video, container, false)
+                 : inflater.inflate(R.layout.fragment_step, container, false);
 
         //TODO check this
         ButterKnife.bind(this, rootView);
-        displayStepData();
+        if(displayVideoFullscreen){
+            displayVideoThumb(mCurrentStep.getThumbnailURL());
+        }else {
+            displayStepData();
+        }
+
 
         // Inflate the layout for this fragment
         return rootView;
@@ -128,9 +155,6 @@ public class StepFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if(mExoPlayer != null){
-            releasePlayer();
-        }
     }
 
     @Override
@@ -138,6 +162,7 @@ public class StepFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putLong(RESUME_POSITION_KEY, resumePosition);
         outState.putInt(RESUME_WINDOW_KEY, resumeWindow);
+        outState.putBoolean(RecipeDetailFragment.ARG_IS_TABLET_VIEW, isTabletView);
 
 
     }
@@ -169,17 +194,8 @@ public class StepFragment extends Fragment {
             mRightArrow.setOnClickListener(arrowClickListener);
         }
 
-        if(( thumbnailURL != null) && !thumbnailURL.isEmpty() && ImageUtils.isImage(thumbnailURL)){
-            displayVideoThumb(thumbnailURL);
-            mVideoThumb.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mVideoThumb.setVisibility(View.GONE);
-                    if (stepHasVideo())createExoPlayer();
-                }
-            });
+        if(shouldDisplayVideoThumb) displayVideoThumb(thumbnailURL);
 
-        }
 
     }
 

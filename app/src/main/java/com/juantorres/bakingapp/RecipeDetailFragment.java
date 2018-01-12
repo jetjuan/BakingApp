@@ -166,6 +166,7 @@ public class RecipeDetailFragment extends Fragment {
 //                        intent.putExtra(ARG_STEP, Parcels.wrap(holder.mStep) );
                 intent.putExtra(ARG_STEPS, Parcels.wrap(mItem.getSteps()));
                 intent.putExtra(ARG_STEP_INDEX, position);
+                intent.putExtra(ARG_IS_TABLET_VIEW, false);
                 startActivity(intent);
             }
         }
