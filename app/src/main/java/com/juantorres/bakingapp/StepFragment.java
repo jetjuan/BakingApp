@@ -176,7 +176,6 @@ public class StepFragment extends Fragment {
         final String stepDescription = mCurrentStep.getDescription();
         final String stepShortDescription = mCurrentStep.getShortDescription();
         final String thumbnailURL = mCurrentStep.getThumbnailURL();
-        final String videoURL = mCurrentStep.getVideoURL();
         final int firstStepIndex = 0;
         final int lastStepIndex = mSteps.size()-1;
 
