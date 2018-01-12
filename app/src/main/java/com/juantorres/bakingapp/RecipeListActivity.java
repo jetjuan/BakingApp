@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.juantorres.bakingapp.data.Recipe;
 import com.juantorres.bakingapp.data.json.RequestInterface;
 
@@ -60,15 +61,6 @@ public class RecipeListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         View recyclerView = findViewById(R.id.recipe_list);
         assert recyclerView != null;
@@ -131,11 +123,15 @@ public class RecipeListActivity extends AppCompatActivity {
             holder.mTvServingsCount.setText( String.valueOf(holder.mItem.getServings()));
             String picUrl = holder.mItem.getImage();
             if(!picUrl.equals("") && picUrl !=null){
+                RequestOptions requestOptions = new RequestOptions();
+                requestOptions.placeholder(R.drawable.ic_recipe);
+                requestOptions.error(R.drawable.ic_recipe);
+
                 Glide
                         .with(getApplicationContext())
+                        .setDefaultRequestOptions(requestOptions)
                         .load(picUrl)
                         //.centerCrop() TODO find out why this doesn't work
-//                        .placeholder()TODO add a spinner as a placeholder
                         .into(holder.mIvRecipeImage);
             }
 

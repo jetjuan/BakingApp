@@ -18,7 +18,7 @@
         android:id="@+id/two_pane_separator"
         android:layout_width="2dp"
         android:layout_height="match_parent"
-        android:background="@android:color/black"
+        android:background="@color/colorDivider"
         />
 
     <ScrollView

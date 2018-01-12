@@ -1,12 +1,11 @@
 package com.juantorres.bakingapp;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -42,13 +41,16 @@ public class RecipeDetailFragment extends Fragment {
 //    public static final String ARG_STEP = "ARG_STEP";
     public static final String ARG_STEPS = "ARG_STEPS";
     public static final String ARG_STEP_INDEX = "ARG_STEP_INDEX";
+    public static final String ARG_IS_TABLET_VIEW = "ARG_IS_TABLET_VIEW";
+    public static final String ARG_SELECTED_STEP_POSITION = "ARG_SELECTED_STEP_POSITION";
 
 
     /**
      * The dummy content this fragment is presenting.
      */
     private Recipe mItem;
-    private boolean mTabletView;
+    private boolean mIsTabletView;
+    private int mSelectedIndex = -1;
     @BindView(R.id.ingredients) public TextView mIngredientsText;
     @BindView(R.id.rv_steps)    public RecyclerView mStepsRecyclerView;
 
@@ -77,7 +79,13 @@ public class RecipeDetailFragment extends Fragment {
             }
         }
 
-        mTabletView = !(getActivity().findViewById(R.id.two_pane_separator) == null);
+        if (savedInstanceState == null){
+            mIsTabletView = !(getActivity().findViewById(R.id.two_pane_separator) == null);
+
+        }else {
+            mIsTabletView = savedInstanceState.getBoolean(ARG_IS_TABLET_VIEW);
+            mSelectedIndex = savedInstanceState.getInt(ARG_SELECTED_STEP_POSITION);
+        }
     }
 
     @Override
@@ -103,8 +111,15 @@ public class RecipeDetailFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(ARG_IS_TABLET_VIEW, mIsTabletView );
+        outState.putInt(ARG_SELECTED_STEP_POSITION, mSelectedIndex);
+    }
+
     public class StepsRecyclerViewAdapter
-            extends RecyclerView.Adapter<StepsRecyclerViewAdapter.StepsViewHolder> {
+            extends RecyclerView.Adapter<StepsRecyclerViewAdapter.StepsViewHolder> implements View.OnClickListener {
 
         private final List<Step> mSteps;
 
@@ -127,26 +142,33 @@ public class RecipeDetailFragment extends Fragment {
             holder.mTvShortDescription.setText(shortDescription );
 
 
-            holder.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(mTabletView){
-                        //Todo add code in case app is running on Tablet
-                        ((RecipeDetailActivity) getActivity()).displayStepFragment( mItem.getSteps(), position);
-                    }else{
-                        Intent intent = new Intent(getContext(), StepActivity.class);
-//                        intent.putExtra(ARG_STEP, Parcels.wrap(holder.mStep) );
-                        intent.putExtra(ARG_STEPS, Parcels.wrap(mItem.getSteps()));
-                        intent.putExtra(ARG_STEP_INDEX, position);
-                        startActivity(intent);
-                    }
-                }
-            });
+            holder.mView.setOnClickListener(this);
+            holder.mView.setTag(position);
+            if (mSelectedIndex == position) holder.mView.setBackgroundColor(getResources().getColor(R.color.colorAccent));
         }
 
         @Override
         public int getItemCount() {
             return mSteps.size();
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = (int)v.getTag();
+
+            if(mIsTabletView){
+                //Todo add code in case app is running on Tablet
+                selectStep(position);
+
+                ((RecipeDetailActivity) getActivity()).displayStepFragment( mItem.getSteps(), position);
+            }else{
+                Intent intent = new Intent(getContext(), StepActivity.class);
+//                        intent.putExtra(ARG_STEP, Parcels.wrap(holder.mStep) );
+                intent.putExtra(ARG_STEPS, Parcels.wrap(mItem.getSteps()));
+                intent.putExtra(ARG_STEP_INDEX, position);
+                intent.putExtra(ARG_IS_TABLET_VIEW, false);
+                startActivity(intent);
+            }
         }
 
         public class StepsViewHolder extends RecyclerView.ViewHolder {
@@ -166,6 +188,19 @@ public class RecipeDetailFragment extends Fragment {
                 return super.toString() + " '" + mTvShortDescription.getText() + "'";
             }
         }
+    }
+
+    public void selectStep(int position){
+        if(position <0) return;
+
+        if((mSelectedIndex != position) && mSelectedIndex >= 0 ) mStepsRecyclerView.getLayoutManager().getChildAt(mSelectedIndex)
+                .setBackgroundColor( mStepsRecyclerView.getSolidColor());
+
+        mStepsRecyclerView.getLayoutManager().getChildAt(position)
+                .setBackgroundColor( getResources().getColor(R.color.colorAccent));
+
+        mSelectedIndex = position;
+
     }
 
 
