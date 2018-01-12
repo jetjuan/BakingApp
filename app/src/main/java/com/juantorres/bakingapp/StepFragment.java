@@ -44,8 +44,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class StepFragment extends Fragment {
-    private String RESUME_WINDOW_KEY  = "RESUME_WINDOW_KEY";
-    private String RESUME_POSITION_KEY = "RESUME_POSITION_KEY";
+    private final static String RESUME_WINDOW_KEY  = "RESUME_WINDOW_KEY";
+    private final static String RESUME_POSITION_KEY = "RESUME_POSITION_KEY";
     private Step mCurrentStep;
     private List<Step> mSteps;
     private int mStepIndex;
