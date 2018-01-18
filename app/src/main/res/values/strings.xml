@@ -11,6 +11,7 @@
     <string name="label_servings">Servings: </string>
     <string name="label_ingredients">Ingredients</string>
     <string name="label_steps">Steps</string>
+    <string name="label_widget_header">Baking Recipes</string>
 
 
     //Tools
