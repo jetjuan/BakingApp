@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.juantorres.bakingapp.data.Recipe;
 import com.juantorres.bakingapp.data.json.RequestInterface;
+import com.juantorres.bakingapp.utils.DownloadUtils;
 
 import org.parceler.Parcels;
 
@@ -42,7 +43,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class RecipeListActivity extends AppCompatActivity {
+public class RecipeListActivity extends AppCompatActivity implements Callback<List<Recipe>>{
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -50,7 +51,7 @@ public class RecipeListActivity extends AppCompatActivity {
      */
 
     public final static String EXTRA_RECIPE = "EXTRA_RECIPE";
-
+    private RecyclerView recyclerView;
 
 
     @Override
@@ -62,42 +63,31 @@ public class RecipeListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        View recyclerView = findViewById(R.id.recipe_list);
+        recyclerView = findViewById(R.id.recipe_list);
         assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+        setupRecyclerView();
 
     }
 
-    private void loadJSON(final RecyclerView recyclerView){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getResources().getString(R.string.recipe_api_domain))
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        final RequestInterface request = retrofit.create(RequestInterface.class);
-        Call<List<Recipe>> call = request.getJSON();
-        call.enqueue(new Callback<List<Recipe>>() {
-            @Override
-            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
-                List<Recipe> recipes=  response.body();
+
+
+    @Override
+    public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+        List<Recipe> recipes=  response.body();
 //                data = new ArrayList<>(Arrays.asList(recipes));
-                recyclerView.setAdapter(new RecipeRecyclerViewAdapter(recipes));
-                Log.d("Info", "Recipes downloaded successfully.");
-            }
+        recyclerView.setAdapter(new RecipeListActivity.RecipeRecyclerViewAdapter(recipes));
+        Log.d("Info", "Recipes downloaded successfully.");
+    }
 
-            @Override
-            public void onFailure(Call<List<Recipe>> call, Throwable t) {
-                Log.d("Error",t.getMessage());
-            }
-        });
+    @Override
+    public void onFailure(Call<List<Recipe>> call, Throwable t) {
+        //TODO display an error message and allow a retry method
     }
 
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-//        recyclerView.setAdapter(new RecipeRecyclerViewAdapter(DummyContent.ITEMS));
-        //TODO: check if internet connection
-        if (true) {
-            loadJSON(recyclerView);
-        }
+    private void setupRecyclerView() {
+        DownloadUtils downloader = new DownloadUtils();
+        downloader.downloadRecipesJSON(this, this);
     }
 
     public class RecipeRecyclerViewAdapter
@@ -162,9 +152,9 @@ public class RecipeListActivity extends AppCompatActivity {
             public RecipeViewHolder(View view) {
                 super(view);
                 mView = view;
-                mTvRecipeName = (TextView) view.findViewById(R.id.tv_recipe_name);
-                mTvServingsCount = (TextView) view.findViewById(R.id.tv_recipe_servings_amount);
-                mIvRecipeImage = (ImageView) view.findViewById(R.id.iv_recipe_picture);
+                mTvRecipeName = view.findViewById(R.id.tv_recipe_name);
+                mTvServingsCount =  view.findViewById(R.id.tv_recipe_servings_amount);
+                mIvRecipeImage = view.findViewById(R.id.iv_recipe_picture);
             }
 
             @Override
