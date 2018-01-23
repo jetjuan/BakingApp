@@ -69,8 +69,6 @@ public class RecipeListActivity extends AppCompatActivity implements Callback<Li
 
     }
 
-
-
     @Override
     public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
         List<Recipe> recipes=  response.body();
