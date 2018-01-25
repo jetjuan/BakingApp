@@ -14,6 +14,10 @@
     <string name="label_widget_header">Baking Recipes</string>
 
 
+    //Widget
+    <string name="label_widget_without_recipe">No recipes available.</string>
+
+
     //Tools
     <string name="tool_recipe_name">Android Pie</string>
     <string name="tool_reipe_servings">8</string>

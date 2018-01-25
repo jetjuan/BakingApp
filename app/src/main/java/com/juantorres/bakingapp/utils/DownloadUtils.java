@@ -22,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DownloadUtils{
 
-    public String downloadRecipesJSON(Context context, Callback<List<Recipe>> callback){
+    public void downloadRecipesJSON(Context context, Callback<List<Recipe>> callback){
         String apiDomain = context.getResources().getString(R.string.recipe_api_domain);
 
 
@@ -34,7 +34,6 @@ public class DownloadUtils{
         Call<List<Recipe>> call = request.getJSON();
         call.enqueue(callback);
 
-        return null;
     }
 
 

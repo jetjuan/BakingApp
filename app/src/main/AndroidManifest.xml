@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -49,6 +50,11 @@
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/recipe_widget_provider_info" />
         </receiver>
+
+        <service android:name=".widget.RecipeAppWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+
     </application>
 
 
