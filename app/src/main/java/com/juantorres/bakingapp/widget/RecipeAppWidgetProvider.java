@@ -1,6 +1,7 @@
 package com.juantorres.bakingapp.widget;
 
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
@@ -8,9 +9,10 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 import com.juantorres.bakingapp.R;
+import com.juantorres.bakingapp.RecipeDetailActivity;
+import com.juantorres.bakingapp.RecipeListActivity;
 import com.juantorres.bakingapp.data.Recipe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,11 +29,23 @@ public class RecipeAppWidgetProvider extends AppWidgetProvider{
 
         for (int i=0; i<N; i++) {
             int appWidgetId = appWidgetIds[i];
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_recipe_list);
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_recipes_layout);
 
-            Intent intent = new Intent(context, RecipeAppWidgetService.class);
-            views.setRemoteAdapter(R.id.widget_recipes_container, intent);
+            Intent remoteAdapterIntent = new Intent(context, RecipeAppWidgetService.class);
+            views.setRemoteAdapter(R.id.widget_recipes_list_view, remoteAdapterIntent);
 //            views.setEmptyView(R.id.widget_recipes_container, R.id.widget_empty_view);
+
+            Intent clickIntentTemplate = new Intent(context, RecipeListActivity.class);
+            PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
+                    .addNextIntentWithParentStack(clickIntentTemplate)
+                    .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+//            views.setPendingIntentTemplate(R.id.widget_recipes_list_view, clickPendingIntentTemplate);
+
+            //Todo deleteme
+            PendingIntent test = PendingIntent.getActivity(context, 0, new Intent(context, RecipeListActivity.class), 0);
+            views.setOnClickPendingIntent(R.id.tv_widget_recipe_name, test);
+
+//            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId,R.id.widget_recipes_list_view);
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
     }

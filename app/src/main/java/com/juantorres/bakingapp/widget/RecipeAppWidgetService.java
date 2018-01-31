@@ -1,21 +1,30 @@
 package com.juantorres.bakingapp.widget;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.juantorres.bakingapp.R;
+import com.juantorres.bakingapp.RecipeDetailActivity;
+import com.juantorres.bakingapp.RecipeDetailFragment;
+import com.juantorres.bakingapp.RecipeListActivity;
 import com.juantorres.bakingapp.data.Recipe;
 import com.juantorres.bakingapp.utils.DownloadUtils;
 
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.juantorres.bakingapp.RecipeListActivity.EXTRA_RECIPE;
 
 /**
  * Created by juantorres on 1/23/18.
@@ -70,10 +79,15 @@ public class RecipeAppWidgetService extends RemoteViewsService{
                     || mRecipes.get(position) == null) {
                 return null;
             }
-
+            Recipe recipe = mRecipes.get(position);
             RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_recipe_item);
-            rv.setTextViewText(R.id.tv_widget_recipe_name, mRecipes.get(position).getName());
-//            rv.setOnClickFillInIntent();
+            rv.setTextViewText(R.id.tv_widget_recipe_name, recipe.getName());
+
+            Intent fillInIntent = new Intent();
+//            fillInIntent.putExtra(EXTRA_RECIPE, Parcels.wrap(recipe));
+//            fillInIntent.putExtra(EXTRA_RECIPE, "Something");
+
+            rv.setOnClickFillInIntent(R.layout.widget_recipe_item, fillInIntent);
             return rv;
         }
 

@@ -128,7 +128,6 @@ public class RecipeListActivity extends AppCompatActivity implements Callback<Li
                 public void onClick(View v) {
                     Context context = v.getContext();
                     Intent intent = new Intent(context, RecipeDetailActivity.class);
-                    intent.putExtra(RecipeDetailFragment.ARG_ITEM_ID, holder.mItem.getIdAsString());
                     intent.putExtra(EXTRA_RECIPE, Parcels.wrap(holder.mItem));
                     context.startActivity(intent);
                 }

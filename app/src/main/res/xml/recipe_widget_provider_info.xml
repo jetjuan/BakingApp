@@ -5,7 +5,7 @@
     android:minResizeWidth="@dimen/widget_min_width"
     android:updatePeriodMillis="21600000"
     android:previewImage="@drawable/ic_recipe"
-    android:initialLayout="@layout/widget_recipe_list"
+    android:initialLayout="@layout/widget_recipes_layout"
     android:resizeMode="vertical|horizontal"
     android:widgetCategory="home_screen">
 </appwidget-provider>

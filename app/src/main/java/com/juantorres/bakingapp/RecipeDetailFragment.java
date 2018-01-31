@@ -33,12 +33,7 @@ import static com.juantorres.bakingapp.RecipeListActivity.EXTRA_RECIPE;
  * on handsets.
  */
 public class RecipeDetailFragment extends Fragment {
-    /**
-     * The fragment argument representing the item ID that this fragment
-     * represents.
-     */
-    public static final String ARG_ITEM_ID = "item_id";
-//    public static final String ARG_STEP = "ARG_STEP";
+
     public static final String ARG_STEPS = "ARG_STEPS";
     public static final String ARG_STEP_INDEX = "ARG_STEP_INDEX";
     public static final String ARG_IS_TABLET_VIEW = "ARG_IS_TABLET_VIEW";
@@ -67,9 +62,6 @@ public class RecipeDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments().containsKey(EXTRA_RECIPE)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
             mItem = Parcels.unwrap(getArguments().getParcelable(EXTRA_RECIPE));
 
             Activity activity = this.getActivity();
