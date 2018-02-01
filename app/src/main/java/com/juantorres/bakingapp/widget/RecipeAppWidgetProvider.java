@@ -43,7 +43,7 @@ public class RecipeAppWidgetProvider extends AppWidgetProvider{
 
             //Todo deleteme
             PendingIntent test = PendingIntent.getActivity(context, 0, new Intent(context, RecipeListActivity.class), 0);
-            views.setOnClickPendingIntent(R.id.tv_widget_recipe_name, test);
+            views.setOnClickPendingIntent(R.id.widget_title, test);
 
 //            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId,R.id.widget_recipes_list_view);
             appWidgetManager.updateAppWidget(appWidgetId, views);
