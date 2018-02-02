@@ -20,8 +20,6 @@ import java.util.List;
  */
 
 public class RecipeAppWidgetProvider extends AppWidgetProvider{
-    private List<Recipe> mRecipes;
-    public static final String RECIPES_KEY = "RECIPES_KEY";
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -39,12 +37,7 @@ public class RecipeAppWidgetProvider extends AppWidgetProvider{
             PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
                     .addNextIntentWithParentStack(clickIntentTemplate)
                     .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-//            views.setPendingIntentTemplate(R.id.widget_recipes_list_view, clickPendingIntentTemplate);
-
-            //Todo deleteme
-            PendingIntent test = PendingIntent.getActivity(context, 0, new Intent(context, RecipeListActivity.class), 0);
-            views.setOnClickPendingIntent(R.id.widget_title, test);
-
+            views.setPendingIntentTemplate(R.id.widget_recipes_list_view, clickPendingIntentTemplate);
 //            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId,R.id.widget_recipes_list_view);
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
