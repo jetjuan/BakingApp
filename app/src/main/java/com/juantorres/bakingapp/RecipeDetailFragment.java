@@ -88,7 +88,6 @@ public class RecipeDetailFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
 
-        // Show the dummy content as text in a TextView.
         if (mItem != null) {
             //Todo Complete this to retrieve
             String ingredientString = IngredientsUtil.getIngredientsStrings(mItem.getIngredients());
@@ -149,7 +148,6 @@ public class RecipeDetailFragment extends Fragment {
             int position = (int)v.getTag();
 
             if(mIsTabletView){
-                //Todo add code in case app is running on Tablet
                 selectStep(position);
 
                 ((RecipeDetailActivity) getActivity()).displayStepFragment( mItem.getSteps(), position);

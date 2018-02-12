@@ -114,7 +114,6 @@ public class RecipeListActivity extends AppCompatActivity implements Callback<Li
                         .with(getApplicationContext())
                         .setDefaultRequestOptions(requestOptions)
                         .load(picUrl)
-                        //.centerCrop() TODO find out why this doesn't work
                         .into(holder.mIvRecipeImage);
             }
 
