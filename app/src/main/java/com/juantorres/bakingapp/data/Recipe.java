@@ -8,7 +8,6 @@ import java.util.List;
 /**
  * Created by juantorres on 11/6/17.
  */
-//TODO latest todo: use Parcelabler Library to convert Recipe, Steps and ingredients to Parcelable, then pass them as Extras to Detail Activity, then display all the ingredients
 @Parcel
 public class Recipe {
     public long id;
