@@ -10,10 +10,8 @@ import android.widget.RemoteViews;
 
 import com.juantorres.bakingapp.R;
 import com.juantorres.bakingapp.RecipeDetailActivity;
-import com.juantorres.bakingapp.RecipeListActivity;
-import com.juantorres.bakingapp.data.Recipe;
 
-import java.util.List;
+
 
 /**
  * Created by juantorres on 1/16/18.
@@ -33,7 +31,7 @@ public class RecipeAppWidgetProvider extends AppWidgetProvider{
             views.setRemoteAdapter(R.id.widget_recipes_list_view, remoteAdapterIntent);
 //            views.setEmptyView(R.id.widget_recipes_container, R.id.widget_empty_view);
 
-            Intent clickIntentTemplate = new Intent(context, RecipeListActivity.class);
+            Intent clickIntentTemplate = new Intent(context, RecipeDetailActivity.class);
             PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
                     .addNextIntentWithParentStack(clickIntentTemplate)
                     .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

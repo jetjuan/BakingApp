@@ -85,7 +85,7 @@ public class RecipeAppWidgetService extends RemoteViewsService{
 
             Intent fillInIntent = new Intent();
 //            fillInIntent.putExtra(EXTRA_RECIPE, Parcels.wrap(recipe));
-            fillInIntent.putExtra(EXTRA_RECIPE, "Something");
+            fillInIntent.putExtra(EXTRA_RECIPE, Parcels.wrap(recipe));
 
             rv.setOnClickFillInIntent(R.id.widget_recipe_item, fillInIntent);
             return rv;
