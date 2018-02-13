@@ -8,6 +8,7 @@ import com.juantorres.bakingapp.RecipeListActivity;
 import com.juantorres.bakingapp.data.Recipe;
 import com.juantorres.bakingapp.data.json.RequestInterface;
 
+import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -34,6 +35,26 @@ public class DownloadUtils{
         Call<List<Recipe>> call = request.getJSON();
         call.enqueue(callback);
 
+    }
+
+    public List<Recipe> downloadRecipesJSON(Context context){
+        String apiDomain = context.getResources().getString(R.string.recipe_api_domain);
+        List<Recipe> recipes = null;
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(apiDomain)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        RequestInterface request = retrofit.create(RequestInterface.class);
+        Call<List<Recipe>> response = request.getJSON();
+
+        try {
+            return response.execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return recipes;
     }
 
 
