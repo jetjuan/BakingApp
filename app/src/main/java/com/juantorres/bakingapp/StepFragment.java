@@ -44,8 +44,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class StepFragment extends Fragment {
-    private String RESUME_WINDOW_KEY  = "RESUME_WINDOW_KEY";
-    private String RESUME_POSITION_KEY = "RESUME_POSITION_KEY";
+    private final static String RESUME_WINDOW_KEY  = "RESUME_WINDOW_KEY";
+    private final static String RESUME_POSITION_KEY = "RESUME_POSITION_KEY";
     private Step mCurrentStep;
     private List<Step> mSteps;
     private int mStepIndex;
@@ -108,7 +108,6 @@ public class StepFragment extends Fragment {
                 inflater.inflate(R.layout.fragment_fullscreen_step_video, container, false)
                  : inflater.inflate(R.layout.fragment_step, container, false);
 
-        //TODO check this
         ButterKnife.bind(this, rootView);
         if(displayVideoFullscreen){
             displayVideoThumb(mCurrentStep.getThumbnailURL());
@@ -124,13 +123,6 @@ public class StepFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        //TODO implements this
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
     }
 
     @Override
@@ -176,7 +168,6 @@ public class StepFragment extends Fragment {
         final String stepDescription = mCurrentStep.getDescription();
         final String stepShortDescription = mCurrentStep.getShortDescription();
         final String thumbnailURL = mCurrentStep.getThumbnailURL();
-        final String videoURL = mCurrentStep.getVideoURL();
         final int firstStepIndex = 0;
         final int lastStepIndex = mSteps.size()-1;
 

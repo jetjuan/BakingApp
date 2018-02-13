@@ -33,12 +33,7 @@ import static com.juantorres.bakingapp.RecipeListActivity.EXTRA_RECIPE;
  * on handsets.
  */
 public class RecipeDetailFragment extends Fragment {
-    /**
-     * The fragment argument representing the item ID that this fragment
-     * represents.
-     */
-    public static final String ARG_ITEM_ID = "item_id";
-//    public static final String ARG_STEP = "ARG_STEP";
+
     public static final String ARG_STEPS = "ARG_STEPS";
     public static final String ARG_STEP_INDEX = "ARG_STEP_INDEX";
     public static final String ARG_IS_TABLET_VIEW = "ARG_IS_TABLET_VIEW";
@@ -66,10 +61,7 @@ public class RecipeDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
+        if (getArguments().containsKey(EXTRA_RECIPE)) {
             mItem = Parcels.unwrap(getArguments().getParcelable(EXTRA_RECIPE));
 
             Activity activity = this.getActivity();
@@ -96,9 +88,7 @@ public class RecipeDetailFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
 
-        // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            //Todo Complete this to retrieve
             String ingredientString = IngredientsUtil.getIngredientsStrings(mItem.getIngredients());
             mIngredientsText.setText(
                     Html.fromHtml(ingredientString));
@@ -157,7 +147,6 @@ public class RecipeDetailFragment extends Fragment {
             int position = (int)v.getTag();
 
             if(mIsTabletView){
-                //Todo add code in case app is running on Tablet
                 selectStep(position);
 
                 ((RecipeDetailActivity) getActivity()).displayStepFragment( mItem.getSteps(), position);
