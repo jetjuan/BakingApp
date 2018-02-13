@@ -89,7 +89,6 @@ public class RecipeDetailFragment extends Fragment {
 
 
         if (mItem != null) {
-            //Todo Complete this to retrieve
             String ingredientString = IngredientsUtil.getIngredientsStrings(mItem.getIngredients());
             mIngredientsText.setText(
                     Html.fromHtml(ingredientString));
