@@ -1,17 +1,12 @@
 package com.juantorres.bakingapp.widget;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.juantorres.bakingapp.R;
-import com.juantorres.bakingapp.RecipeDetailActivity;
-import com.juantorres.bakingapp.RecipeDetailFragment;
-import com.juantorres.bakingapp.RecipeListActivity;
 import com.juantorres.bakingapp.data.Recipe;
 import com.juantorres.bakingapp.utils.DownloadUtils;
 
@@ -20,9 +15,6 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static com.juantorres.bakingapp.RecipeListActivity.EXTRA_RECIPE;
 
@@ -36,21 +28,17 @@ public class RecipeAppWidgetService extends RemoteViewsService{
         return new RecipeRemoveViewFactory(this.getApplicationContext(), intent);
     }
 
-    public class RecipeRemoveViewFactory implements RemoteViewsFactory, Callback<List<Recipe>> {
+    public class RecipeRemoveViewFactory implements RemoteViewsFactory{
         private Context mContext;
         private List<Recipe> mRecipes;
 
         RecipeRemoveViewFactory(Context context, Intent intent) {
             mContext = context;
-//            mRecipes = Parcels.unwrap(intent.getParcelableExtra(RecipeAppWidgetProvider.RECIPES_KEY));
-//            mRecipes = Parcels.unwrap(mRecipes);
         }
 
         @Override
         public void onCreate() {
-            //TODO Implement this ASAP
-//            mRecipes = new ArrayList<>();
-//            mRecipes.add( new Recipe());
+
         }
 
         @Override
@@ -64,8 +52,17 @@ public class RecipeAppWidgetService extends RemoteViewsService{
         }
 
         private void downloadRecipes(){
+//            final Callback<List<Recipe>> callback = this;
+//            Thread download = new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    DownloadUtils downloadUtils = new DownloadUtils();
+//                    mRecipes = downloadUtils.downloadRecipesJSON(mContext);
+//                }
+//            });
+//            download.run();
             DownloadUtils downloadUtils = new DownloadUtils();
-            downloadUtils.downloadRecipesJSON(mContext, this);
+            mRecipes = downloadUtils.downloadRecipesJSON(mContext);
         }
 
         @Override
@@ -84,7 +81,6 @@ public class RecipeAppWidgetService extends RemoteViewsService{
             rv.setTextViewText(R.id.tv_widget_recipe_name, recipe.getName());
 
             Intent fillInIntent = new Intent();
-//            fillInIntent.putExtra(EXTRA_RECIPE, Parcels.wrap(recipe));
             fillInIntent.putExtra(EXTRA_RECIPE, Parcels.wrap(recipe));
 
             rv.setOnClickFillInIntent(R.id.widget_recipe_item, fillInIntent);
@@ -110,16 +106,6 @@ public class RecipeAppWidgetService extends RemoteViewsService{
         @Override
         public boolean hasStableIds() {
             return true;
-        }
-
-        @Override
-        public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
-            mRecipes =  response.body();
-        }
-
-        @Override
-        public void onFailure(Call<List<Recipe>> call, Throwable t) {
-            //TODO display an error message and allow a retry method
         }
     }
 
