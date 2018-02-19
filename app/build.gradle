@@ -56,4 +56,10 @@ dependencies {
 
 
     testCompile 'junit:junit:4.12'
+
+    compile 'com.android.support:support-annotations:25.1.0'
+
+    //Testing
+    androidTestCompile 'com.android.support:support-annotations:25.1.0'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
 }
