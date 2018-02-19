@@ -10,7 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -27,8 +30,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+
 
 /**
  * An activity representing a list of Recipes. This activity
@@ -47,6 +49,9 @@ public class RecipeListActivity extends AppCompatActivity implements Callback<Li
 
     public final static String EXTRA_RECIPE = "EXTRA_RECIPE";
     private RecyclerView recyclerView;
+    private LinearLayout mErrorMessage;
+    private ProgressBar mLoadingIndicator;
+    private Button mRetryButton;
 
 
     @Override
@@ -58,7 +63,11 @@ public class RecipeListActivity extends AppCompatActivity implements Callback<Li
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        recyclerView = findViewById(R.id.recipe_list);
+        mErrorMessage = findViewById(R.id.network_error_message);
+        mLoadingIndicator = findViewById(R.id.loading_indicator);
+        mRetryButton = findViewById(R.id.network_retry_button);
+
+        recyclerView = findViewById(R.id.recipes);
         assert recyclerView != null;
         setupRecyclerView();
 
@@ -69,19 +78,54 @@ public class RecipeListActivity extends AppCompatActivity implements Callback<Li
         List<Recipe> recipes=  response.body();
 //                data = new ArrayList<>(Arrays.asList(recipes));
         recyclerView.setAdapter(new RecipeListActivity.RecipeRecyclerViewAdapter(recipes));
+        showRecyclerView();
         Log.d("Info", "Recipes downloaded successfully.");
     }
 
     @Override
     public void onFailure(Call<List<Recipe>> call, Throwable t) {
-        //TODO display an error message and allow a retry method
+        showErrorMessage();
     }
 
 
     private void setupRecyclerView() {
+        showLoadingIndicator();
         DownloadUtils downloader = new DownloadUtils();
         downloader.downloadRecipesJSON(this, this);
     }
+
+    private void showLoadingIndicator(){
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+
+        mErrorMessage.setVisibility(View.GONE);
+        //TODO: uncomment me
+//        recyclerView.setVisibility(View.GONE);
+
+    }
+
+    private void showErrorMessage(){
+        mErrorMessage.setVisibility(View.VISIBLE);
+
+        recyclerView.setVisibility(View.GONE);
+        mLoadingIndicator.setVisibility(View.GONE);
+
+        mRetryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setupRecyclerView();
+            }
+        });
+
+    }
+
+    private void showRecyclerView(){
+        recyclerView.setVisibility(View.VISIBLE);
+
+        mLoadingIndicator.setVisibility(View.GONE);
+        mErrorMessage.setVisibility(View.GONE);
+    }
+
+
 
     public class RecipeRecyclerViewAdapter
             extends RecyclerView.Adapter<RecipeRecyclerViewAdapter.RecipeViewHolder> {

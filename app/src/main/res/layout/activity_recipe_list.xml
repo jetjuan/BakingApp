@@ -27,7 +27,43 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <include layout="@layout/recipe_list" />
+        <ProgressBar
+            android:id="@+id/loading_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+
+            />
+
+        <include
+            android:id="@+id/recipes"
+            layout="@layout/recipe_list"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/network_error_message"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            tools:visibility="visible"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/network_error_message"
+                android:gravity="center"
+                />
+
+            <Button
+                android:id="@+id/network_retry_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Retry"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
+
     </FrameLayout>
 
 
