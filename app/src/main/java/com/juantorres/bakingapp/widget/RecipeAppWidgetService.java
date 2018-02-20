@@ -2,6 +2,7 @@ package com.juantorres.bakingapp.widget;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.Html;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -9,6 +10,7 @@ import android.widget.RemoteViewsService;
 import com.juantorres.bakingapp.R;
 import com.juantorres.bakingapp.data.Recipe;
 import com.juantorres.bakingapp.utils.DownloadUtils;
+import com.juantorres.bakingapp.utils.IngredientsUtil;
 
 
 import org.parceler.Parcels;
@@ -52,15 +54,6 @@ public class RecipeAppWidgetService extends RemoteViewsService{
         }
 
         private void downloadRecipes(){
-//            final Callback<List<Recipe>> callback = this;
-//            Thread download = new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    DownloadUtils downloadUtils = new DownloadUtils();
-//                    mRecipes = downloadUtils.downloadRecipesJSON(mContext);
-//                }
-//            });
-//            download.run();
             DownloadUtils downloadUtils = new DownloadUtils();
             mRecipes = downloadUtils.downloadRecipesJSON(mContext);
         }
@@ -79,6 +72,8 @@ public class RecipeAppWidgetService extends RemoteViewsService{
             Recipe recipe = mRecipes.get(position);
             RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_recipe_item);
             rv.setTextViewText(R.id.tv_widget_recipe_name, recipe.getName());
+            String ingredients = IngredientsUtil.getIngredientsStrings(recipe.getIngredients());
+            rv.setTextViewText(R.id.tv_widget_ingredients, Html.fromHtml(ingredients) );
 
             Intent fillInIntent = new Intent();
             fillInIntent.putExtra(EXTRA_RECIPE, Parcels.wrap(recipe));
