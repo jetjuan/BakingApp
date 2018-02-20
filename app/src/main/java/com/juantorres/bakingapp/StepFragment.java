@@ -46,6 +46,7 @@ import butterknife.ButterKnife;
 public class StepFragment extends Fragment {
     private final static String RESUME_WINDOW_KEY  = "RESUME_WINDOW_KEY";
     private final static String RESUME_POSITION_KEY = "RESUME_POSITION_KEY";
+    private final static String PLAY_WHEN_READY = "PLAY_WHEN_READY";
     private Step mCurrentStep;
     private List<Step> mSteps;
     private int mStepIndex;
@@ -54,6 +55,7 @@ public class StepFragment extends Fragment {
     private long resumePosition;
     private boolean shouldDisplayVideoThumb;
     private boolean isTabletView;
+    private boolean playWhenReady;
     @Nullable
     @BindView(R.id.tv_short_description)
     public TextView mTvShortDescription;
@@ -94,6 +96,7 @@ public class StepFragment extends Fragment {
             resumePosition = savedInstanceState.getLong(RESUME_POSITION_KEY);
             resumeWindow = savedInstanceState.getInt(RESUME_WINDOW_KEY);
             isTabletView = savedInstanceState.getBoolean(RecipeDetailFragment.ARG_IS_TABLET_VIEW, true);
+            playWhenReady = savedInstanceState.getBoolean(PLAY_WHEN_READY);
         }
     }
 
@@ -133,7 +136,10 @@ public class StepFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (mExoPlayer !=null ) releasePlayer();
+        if (mExoPlayer !=null ) {
+            playWhenReady = mExoPlayer.getPlayWhenReady();
+            releasePlayer();
+        }
     }
 
     @Override
@@ -155,6 +161,7 @@ public class StepFragment extends Fragment {
         outState.putLong(RESUME_POSITION_KEY, resumePosition);
         outState.putInt(RESUME_WINDOW_KEY, resumeWindow);
         outState.putBoolean(RecipeDetailFragment.ARG_IS_TABLET_VIEW, isTabletView);
+        outState.putBoolean(PLAY_WHEN_READY, playWhenReady);
 
 
     }
@@ -242,7 +249,7 @@ public class StepFragment extends Fragment {
 
 
         //5. Play
-//        mExoPlayer.setPlayWhenReady(true);
+        mExoPlayer.setPlayWhenReady(playWhenReady);
 
     }
 

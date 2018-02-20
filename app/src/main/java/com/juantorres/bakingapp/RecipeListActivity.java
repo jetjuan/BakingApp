@@ -98,8 +98,7 @@ public class RecipeListActivity extends AppCompatActivity implements Callback<Li
         mLoadingIndicator.setVisibility(View.VISIBLE);
 
         mErrorMessage.setVisibility(View.GONE);
-        //TODO: uncomment me
-//        recyclerView.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
 
     }
 
