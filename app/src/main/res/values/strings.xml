@@ -15,7 +15,7 @@
 
 
     //Widget
-    <string name="label_widget_without_recipe">No recipes available.</string>
+    <string name="label_widget_without_recipe">No recipes available. Select a recipe from the Baking app so you can see their ingredients here!</string>
 
 
     //Tools

@@ -1,8 +1,11 @@
 package com.juantorres.bakingapp;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.juantorres.bakingapp.data.Recipe;
 import com.juantorres.bakingapp.utils.DownloadUtils;
+import com.juantorres.bakingapp.widget.RecipeAppWidgetProvider;
 
 import org.parceler.Parcels;
 
@@ -125,6 +129,17 @@ public class RecipeListActivity extends AppCompatActivity implements Callback<Li
     }
 
 
+    public void displayRecipeOnWidget(Parcelable recipe){
+        Intent intent = new Intent(this, RecipeAppWidgetProvider.class);
+        intent.setAction(RecipeAppWidgetProvider.ACTION_APPWIDGET_UPDATE);
+// Use an array and EXTRA_APPWIDGET_IDS instead of AppWidgetManager.EXTRA_APPWIDGET_ID,
+// since it seems the onUpdate() is only fired on that:
+        int[] ids = AppWidgetManager.getInstance(getApplication())
+                .getAppWidgetIds(new ComponentName(getApplication(), RecipeAppWidgetProvider.class));
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        intent.putExtra(RecipeAppWidgetProvider.WIDGET_RECIPE_EXTRA, recipe);
+        sendBroadcast(intent);
+    }
 
     public class RecipeRecyclerViewAdapter
             extends RecyclerView.Adapter<RecipeRecyclerViewAdapter.RecipeViewHolder> {
@@ -163,9 +178,11 @@ public class RecipeListActivity extends AppCompatActivity implements Callback<Li
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Parcelable recipeExtra = Parcels.wrap(holder.mItem);
+                    displayRecipeOnWidget(recipeExtra);
                     Context context = v.getContext();
                     Intent intent = new Intent(context, RecipeDetailActivity.class);
-                    intent.putExtra(EXTRA_RECIPE, Parcels.wrap(holder.mItem));
+                    intent.putExtra(EXTRA_RECIPE, recipeExtra);
                     context.startActivity(intent);
                 }
             });
